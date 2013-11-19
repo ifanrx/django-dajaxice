@@ -59,6 +59,6 @@ class DajaxiceRequest(View):
                     raise
                 response = dajaxice_config.DAJAXICE_EXCEPTION
 
-            return HttpResponse(response, mimetype="application/x-json")
+            return HttpResponse(response, content_type="application/json; charset=utf-8")
         else:
             raise FunctionNotCallableError(name)

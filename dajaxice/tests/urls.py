@@ -1,4 +1,7 @@
-from django.conf.urls.defaults import *
+try:
+    from django.conf.urls import *
+except ImportError:
+    from django.conf.urls.defaults import *
 
 from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 
