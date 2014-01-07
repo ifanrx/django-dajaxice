@@ -7,8 +7,8 @@ class DajaxiceConfig(object):
     """ Provide an easy to use way to read the dajaxice configuration and
     return the default values if no configuration is present."""
 
-    default_config = {'DAJAXICE_XMLHTTPREQUEST_JS_IMPORT': True,
-                      'DAJAXICE_JSON2_JS_IMPORT': True,
+    default_config = {'DAJAXICE_XMLHTTPREQUEST_JS_IMPORT': False,
+                      'DAJAXICE_JSON2_JS_IMPORT': False,
                       'DAJAXICE_EXCEPTION': 'DAJAXICE_EXCEPTION',
                       'DAJAXICE_MEDIA_PREFIX': 'dajaxice'}
 
