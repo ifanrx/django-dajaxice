@@ -1,5 +1,4 @@
 import sys
-import traceback
 import logging
 
 from django.conf import settings
@@ -53,13 +52,15 @@ class DajaxiceRequest(View):
             # Call the function. If something goes wrong, handle the Exception
             try:
                 response = function.call(request, **data)
-            except Exception, e:
-                # Log the traceback
-                log.error('\n'.join(traceback.format_exception(*sys.exc_info())))
+            except:
+                log.exception('name=%s, data=%s', name, data)
                 if settings.DEBUG:
                     raise
                 response = dajaxice_config.DAJAXICE_EXCEPTION
 
-            return HttpResponse(response, content_type="application/json; charset=utf-8")
+            return HttpResponse(
+                    response, content_type="application/json; charset=utf-8")
         else:
+            log.error('Function %s is not callable. method=%s', name,
+                      request.method)
             raise FunctionNotCallableError(name)

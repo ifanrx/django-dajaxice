@@ -1,6 +1,14 @@
 Changelog
 =========
 
+0.5.6
+^^^^^
+
+* Django 1.6 compatibility.
+* Update json2.js and XMLHttpRequest.js
+* Enhanced debugging facilities.
+* A bunch of other enhancements.
+
 0.5.5
 ^^^^^
 * Return XMLHttpRequest from concreate functions as well as from function call.

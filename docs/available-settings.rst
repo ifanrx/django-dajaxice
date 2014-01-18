@@ -15,7 +15,7 @@ DAJAXICE_XMLHTTPREQUEST_JS_IMPORT
 
 Include XmlHttpRequest.js inside dajaxice.core.js
 
-Defaults to ``True``
+Defaults to ``False``
 
 Optional: ``True``
 
@@ -24,7 +24,7 @@ DAJAXICE_JSON2_JS_IMPORT
 
 Include json2.js inside dajaxice.core.js
 
-Defaults to ``True``
+Defaults to ``False``
 
 Optional: ``True``
 

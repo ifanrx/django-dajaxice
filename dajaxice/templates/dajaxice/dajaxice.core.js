@@ -1,14 +1,13 @@
 {% load url from future %}
 var Dajaxice = {
-
     {% with module=dajaxice_config.modules top='top' %}
     {% include "dajaxice/dajaxice_function_loop.js" %}
     {% endwith %}
-
     {% for name, module in dajaxice_config.modules.submodules.items %}
     {% include "dajaxice/dajaxice_module_loop.js" %},
     {% endfor %}
 
+{% comment %}
     get_cookie: function(name)
     {
         var cookieValue = null;
@@ -25,7 +24,9 @@ var Dajaxice = {
         }
         return cookieValue;
     },
-
+{% endcomment %}
+    get_cookie: function(a){var d=null;if(document.cookie&&""!=document.cookie)for(var e=document.cookie.split(";"),b=0;b<e.length;b++){var f=e[b].toString().replace(/^\s+/,"").replace(/\s+$/,"");if(f.substring(0,a.length+1)==a+"="){d=decodeURIComponent(f.substring(a.length+1));break}}return d},
+{% comment %}
     call: function(dajaxice_function, method, dajaxice_callback, argv, custom_settings)
     {
         var custom_settings = custom_settings || {},
@@ -71,6 +72,9 @@ var Dajaxice = {
         }
         return oXMLHttpRequest;
     },
+{% endcomment %}
+    call: function(b,d,f,c,a){a=a||{};var e=Dajaxice.get_setting("default_exception_callback");"error_callback"in a&&"function"==typeof a.error_callback&&(e=a.error_callback);c="argv="+encodeURIComponent(JSON.stringify(c));a=new XMLHttpRequest;b="{% url 'dajaxice-endpoint' %}"+b+"/";"GET"==d&&(b=b+"?"+c);a.open(d,b);a.setRequestHeader("Content-Type","application/x-www-form-urlencoded");a.setRequestHeader("X-Requested-With","XMLHttpRequest");a.setRequestHeader("X-CSRFToken",Dajaxice.get_cookie("{{ dajaxice_config.django_settings.CSRF_COOKIE_NAME }}"));
+a.onreadystatechange=function(){if(this.readyState==XMLHttpRequest.DONE)if(this.responseText!=Dajaxice.EXCEPTION&&this.status in Dajaxice.valid_http_responses()){var a;try{a=JSON.parse(this.responseText)}catch(b){a=this.responseText}f(a)}else e()};"POST"==d?a.send(c):a.send();return a},
 
     setup: function(settings)
     {
@@ -89,7 +93,7 @@ var Dajaxice = {
     },
 
     EXCEPTION: '{{ dajaxice_config.DAJAXICE_EXCEPTION }}',
-    default_settings: {'default_exception_callback': function(){ console.log('Dajaxice: Something went wrong.')}}
+    default_settings: {'default_exception_callback': function(){ }}
 };
 
 window['Dajaxice'] = Dajaxice;

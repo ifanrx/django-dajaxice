@@ -2,10 +2,10 @@ from distutils.core import setup
 
 setup(
     name='django-dajaxice-ng',
-    version='0.5.6.1',
+    version='0.5.6.3',
     author='ifanr',
     author_email='tifan@ifanr.com',
-    description='Agnostic and easy to use ajax library for django>1.4',
+    description='Agnostic and easy to use ajax library for django>1.5',
     url='https://github.com/ifanrx/django-dajaxice',
     license='BSD',
     packages=['dajaxice',
@@ -14,9 +14,7 @@ setup(
     package_data={'dajaxice': ['templates/dajaxice/*']},
     long_description=("Easy to use AJAX library for django, all the "
                       "presentation logic resides outside the views and "
-                      "doesn't require any JS Framework. Dajaxice uses the "
-                      "unobtrusive standard-compliant (W3C) XMLHttpRequest "
-                      "1.0 object."
+                      "doesn't require any JS Framework."
                       "This is the Next Gen dajaxice maintained by ifanrx."),
     install_requires=[
         'Django>=1.5'
