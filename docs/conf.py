@@ -49,9 +49,9 @@ copyright = u'2012, Jorge Bastida'
 #
 import pkg_resources
 try:
-    release = pkg_resources.get_distribution('django-dajaxice').version
+    release = pkg_resources.get_distribution('django-dajaxice-ng').version
 except pkg_resources.DistributionNotFound:
-    print 'To build the documentation, The distribution information of django-dajaxice'
+    print 'To build the documentation, The distribution information of django-dajaxice-ng'
     print 'Has to be available.  Either install the package into your'
     print 'development environment or run "setup.py develop" to setup the'
     print 'metadata.  A virtualenv is recommended!'
