@@ -7,10 +7,14 @@ class DajaxiceConfig(object):
     """ Provide an easy to use way to read the dajaxice configuration and
     return the default values if no configuration is present."""
 
-    default_config = {'DAJAXICE_XMLHTTPREQUEST_JS_IMPORT': False,
-                      'DAJAXICE_JSON2_JS_IMPORT': False,
-                      'DAJAXICE_EXCEPTION': 'DAJAXICE_EXCEPTION',
-                      'DAJAXICE_MEDIA_PREFIX': 'dajaxice'}
+    default_config = {
+        'DAJAXICE_XMLHTTPREQUEST_JS_IMPORT': False,
+        'DAJAXICE_JSON2_JS_IMPORT': False,
+        'DAJAXICE_EXCEPTION': 'DAJAXICE_EXCEPTION',
+        'DAJAXICE_MEDIA_PREFIX': 'dajaxice',
+        'DAJAXICE_NOT_CALLABLE_RESPONSE': '{"error":"400 Bad Request"}',
+        'DAJAXICE_IGNORE_REQUEST_NOT_IN_CONTEXT': False
+    }
 
     def __getattr__(self, name):
         """ Return the customized value for a setting (if it exists) or the

@@ -14,6 +14,6 @@ Project Aims
   * Lightweight.
   * Crossbrowsing ready.
   * Unobtrusive standard-compliant (W3C) XMLHttpRequest 1.0 object usage.
+  * Aggresive Django version support while regularly merging from upstream.
 
-Official site http://dajaxproject.com
-Documentation http://readthedocs.org/projects/django-dajaxice/
+Documentation http://django-dajaxice-ng.readthedocs.org/quickstart.html
