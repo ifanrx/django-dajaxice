@@ -1,5 +1,8 @@
 Changelog
 =========
+0.6
+^^^^^
+* Merge from upstream.
 
 0.5.6
 ^^^^^
