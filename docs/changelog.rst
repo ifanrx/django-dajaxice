@@ -12,6 +12,14 @@ Changelog
 * Enhanced debugging facilities.
 * A bunch of other enhancements.
 
+0.7
+^^^^^
+* Make ``django-dajaxice`` work with ``django 1.7``
+
+0.6
+^^^^^
+* Make ``django-dajaxice`` work with ``django 1.6``
+
 0.5.5
 ^^^^^
 * Return XMLHttpRequest from concreate functions as well as from function call.

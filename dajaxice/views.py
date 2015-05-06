@@ -1,6 +1,6 @@
 import sys
 import logging
-
+import django
 from django.conf import settings
 from django.views.generic.base import View
 from django.http import HttpResponse, Http404
@@ -57,9 +57,10 @@ class DajaxiceRequest(View):
                 if settings.DEBUG:
                     raise
                 response = dajaxice_config.DAJAXICE_EXCEPTION
-
-            return HttpResponse(
-                    response, content_type="application/json; charset=utf-8")
+            if django.get_version() >= '1.7':
+                return HttpResponse(response, content_type="application/x-json; charset=utf-8")
+            else:
+                return HttpResponse(response, mimetype="application/x-json; charset=utf-8")
         else:
             log.error('Function %s is not callable. method=%s', name,
                       request.method)

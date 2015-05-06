@@ -1,5 +1,5 @@
-from dajaxice.decorators import dajaxice_register
 import json
+from dajaxice.decorators import dajaxice_register
 
 
 @dajaxice_register
