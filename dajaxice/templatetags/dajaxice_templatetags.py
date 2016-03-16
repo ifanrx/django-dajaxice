@@ -4,6 +4,7 @@ from django import template
 from django.middleware.csrf import get_token
 from django.conf import settings
 from django.core.files.storage import get_storage_class
+from django.utils.safestring import mark_safe
 from dajaxice.core import dajaxice_config
 
 
@@ -33,4 +34,4 @@ def dajaxice_js_import(context, csrf=True):
                 "The 'request' object must be accessible within context.")
 
     url = staticfiles_storage.url('dajaxice/dajaxice.core.js')
-    return '<script src="%s" type="text/javascript" charset="utf-8"></script>' % url
+    return mark_safe('<script src="%s" type="text/javascript" charset="utf-8"></script>' % url)
