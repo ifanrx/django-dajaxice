@@ -1,5 +1,5 @@
-django-dajaxice
-===============
+django-dajaxice-ng
+==================
 
 .. image:: https://badge.fury.io/py/django-dajaxice-ng.png
     :target: http://badge.fury.io/py/django-dajaxice-ng
@@ -7,14 +7,17 @@ django-dajaxice
 .. image:: https://travis-ci.org/ifanrx/django-dajaxice.png?branch=master
     :target: https://travis-ci.org/ifanrx/django-dajaxice
 
-This is a fork from the original repo_ mantained by ifanrx_.
+This is the next generation of dajaxice_ mantained by ifanrx_.
 
-.. _repo: https://github.com/jorgebastida/django-dajaxice
+.. _dajaxice: https://github.com/jorgebastida/django-dajaxice
 .. _ifanrx: https://github.com/ifanrx
 Dajaxice is the communication core of dajaxproject. It's main goal is to trivialize the asynchronous communication within the django server side code and your js code.
 
 dajaxice is JS-framework agnostic and focuses on decoupling the presentation logic from the server-side logic. dajaxice only requieres 5 minutes to start working.
 
+Documentation
+-------------
+http://django-dajaxice-ng.readthedocs.org/quickstart.html
 
 Project status
 ----------------
@@ -45,4 +48,4 @@ Project Aims
   * Unobtrusive standard-compliant (W3C) XMLHttpRequest 1.0 object usage.
   * Aggresive Django version support while regularly merging from upstream.
 
-Documentation http://django-dajaxice-ng.readthedocs.org/quickstart.html
+

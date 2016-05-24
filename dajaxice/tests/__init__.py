@@ -6,7 +6,6 @@ from dajaxice.core import DajaxiceConfig
 from dajaxice.core.Dajaxice import DajaxiceModule, DajaxiceFunction, Dajaxice
 from dajaxice.exceptions import FunctionNotCallableError
 
-
 class DajaxiceModuleTest(TestCase):
 
     def setUp(self):
