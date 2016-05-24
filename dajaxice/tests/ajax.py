@@ -14,7 +14,7 @@ def test_string(request):
 
 @dajaxice_register
 def test_ajax_exception(request):
-    raise Exception()
+    raise Exception
 
 
 @dajaxice_register
