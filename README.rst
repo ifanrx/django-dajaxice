@@ -7,7 +7,7 @@ django-dajaxice-ng
 .. image:: https://travis-ci.org/ifanrx/django-dajaxice.png?branch=master
     :target: https://travis-ci.org/ifanrx/django-dajaxice
 
-This is the next generation of dajaxice_ mantained by ifanrx_.
+This is the next generation of dajaxice_ maintained by ifanrx_.
 
 .. _dajaxice: https://github.com/jorgebastida/django-dajaxice
 .. _ifanrx: https://github.com/ifanrx
@@ -19,23 +19,22 @@ Documentation
 -------------
 http://django-dajaxice-ng.readthedocs.org/quickstart.html
 
-Project status
-----------------
-From ``v0.6`` this project is not going to accept new features. In order to not break existing projects using this library, ``django-dajaxice`` will be maintained until ``django 1.8`` is released.
-
 
 Should I use django-dajaxice?
 ------------------------------
-In a word, No. I created this project 4 years ago as a cool tool in order to solve one specific problem I had at that time.
+According to Jorge Bastida (https://github.com/jorgebastida),
 
-These days using this project is a bad idea.
+    In a word, No. I created this project 4 years ago as a cool tool in order to solve one specific problem I had at that time.
 
-Perhaps I'm more pragmatic now, perhaps my vision of how my django projects should be coupled to libraries like this has change, or perhaps these days I really treasure the purity and simplicity of a vanilla django development.
+    These days using this project is a bad idea.
 
-If you want to mimic what this project does, you would only need some simple views and jQuery.
+    Perhaps I'm more pragmatic now, perhaps my vision of how my django projects should be coupled to libraries like this has change, or perhaps these days I really treasure the purity and simplicity of a vanilla django development.
 
-Forget about adding more unnecessary complexity.  Keep things simple.
+    If you want to mimic what this project does, you would only need some simple views and jQuery.
 
+    Forget about adding more unnecessary complexity.  Keep things simple.
+
+And he has a point. However, what would you do if you are hired to add new features to a django app already built with dajaxice? Replace everything for jQuery (as Bastida suggests) or other technology? Find other guys interested and join forces to move the project forward? I chose the latter.  
 
 Project Aims
 ------------
