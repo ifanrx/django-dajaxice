@@ -37,7 +37,7 @@ var Dajaxice = {
 
         var send_data = 'argv='+encodeURIComponent(JSON.stringify(argv)),
             oXMLHttpRequest = new XMLHttpRequest,
-            endpoint = '{% url 'dajaxice-endpoint' %}'+dajaxice_function+'/';
+            endpoint = dajaxice_endpoint+dajaxice_function+'/';
 
         if(method == 'GET'){
             endpoint = endpoint + '?' + send_data;
@@ -72,7 +72,7 @@ var Dajaxice = {
         return oXMLHttpRequest;
     },
 {% endcomment %}
-    call: function(b,d,f,c,a){a=a||{};var e=Dajaxice.get_setting("default_exception_callback");"error_callback"in a&&"function"==typeof a.error_callback&&(e=a.error_callback);c="argv="+encodeURIComponent(JSON.stringify(c));a=new XMLHttpRequest;b="{% url 'dajaxice-endpoint' %}"+b+"/";"GET"==d&&(b=b+"?"+c);a.open(d,b);a.setRequestHeader("Content-Type","application/x-www-form-urlencoded");a.setRequestHeader("X-Requested-With","XMLHttpRequest");a.setRequestHeader("X-CSRFToken",Dajaxice.get_cookie("{{ dajaxice_config.django_settings.CSRF_COOKIE_NAME }}"));
+    call: function(b,d,f,c,a){a=a||{};var e=Dajaxice.get_setting("default_exception_callback");"error_callback"in a&&"function"==typeof a.error_callback&&(e=a.error_callback);c="argv="+encodeURIComponent(JSON.stringify(c));a=new XMLHttpRequest;b=dajaxice_endpoint+b+"/";"GET"==d&&(b=b+"?"+c);a.open(d,b);a.setRequestHeader("Content-Type","application/x-www-form-urlencoded");a.setRequestHeader("X-Requested-With","XMLHttpRequest");a.setRequestHeader("X-CSRFToken",Dajaxice.get_cookie("{{ dajaxice_config.django_settings.CSRF_COOKIE_NAME }}"));
 a.onreadystatechange=function(){if(this.readyState==XMLHttpRequest.DONE)if(this.responseText!=Dajaxice.EXCEPTION&&this.status in Dajaxice.valid_http_responses()){var a;try{a=JSON.parse(this.responseText)}catch(b){a=this.responseText}f(a)}else e()};"POST"==d?a.send(c):a.send();return a},
 
     setup: function(settings)

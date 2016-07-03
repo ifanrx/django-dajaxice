@@ -55,13 +55,14 @@ class DajaxiceRequest(View):
             except:
                 log.exception('name=%s, data=%s', name, data)
                 if settings.DEBUG:
-                    raise
+                    raise FunctionNotCallableError
                 response = dajaxice_config.DAJAXICE_EXCEPTION
             if django.get_version() >= '1.7':
                 return HttpResponse(response, content_type="application/x-json; charset=utf-8")
             else:
                 return HttpResponse(response, mimetype="application/x-json; charset=utf-8")
         else:
+            raise FunctionNotCallableError
             log.error('Function %s is not callable. method=%s', name,
                       request.method)
             return HttpResponse(

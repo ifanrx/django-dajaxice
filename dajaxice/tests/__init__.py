@@ -6,7 +6,6 @@ from dajaxice.core import DajaxiceConfig
 from dajaxice.core.Dajaxice import DajaxiceModule, DajaxiceFunction, Dajaxice
 from dajaxice.exceptions import FunctionNotCallableError
 
-
 class DajaxiceModuleTest(TestCase):
 
     def setUp(self):
@@ -33,18 +32,18 @@ class DajaxiceFunctionTest(TestCase):
 
     def test_constructor(self):
 
-        class CalledEception(Exception):
+        class CalledException(Exception):
             pass
 
         def callback():
-            raise CalledEception
+            raise CalledException
 
         function = DajaxiceFunction(callback, 'foo', 'POST')
 
         self.assertEqual(function.function, callback)
         self.assertEqual(function.name, 'foo')
         self.assertEqual(function.method, 'POST')
-        self.assertRaises(CalledEception, function.call)
+        self.assertRaises(CalledException, function.call)
 
 
 class DajaxiceTest(TestCase):
@@ -100,8 +99,8 @@ class DajaxiceConfigTest(TestCase):
         self.config = DajaxiceConfig()
 
     def test_defaults(self):
-        self.assertTrue(self.config.DAJAXICE_XMLHTTPREQUEST_JS_IMPORT)
-        self.assertTrue(self.config.DAJAXICE_JSON2_JS_IMPORT)
+        self.assertFalse(self.config.DAJAXICE_XMLHTTPREQUEST_JS_IMPORT)
+        self.assertFalse(self.config.DAJAXICE_JSON2_JS_IMPORT)
         self.assertEqual(self.config.DAJAXICE_EXCEPTION, 'DAJAXICE_EXCEPTION')
         self.assertEqual(self.config.DAJAXICE_MEDIA_PREFIX, 'dajaxice')
 
