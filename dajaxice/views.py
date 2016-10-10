@@ -1,6 +1,4 @@
-import sys
 import logging
-import django
 from django.conf import settings
 from django.views.generic.base import View
 from django.http import HttpResponse, Http404
@@ -19,7 +17,8 @@ def safe_dict(d):
     http://www.gossamer-threads.com/lists/python/bugs/684379
     """
     if isinstance(d, dict):
-        return dict([(k.encode('utf-8'), safe_dict(v)) for k, v in d.iteritems()])
+        return dict(
+            [(k.encode('utf-8'), safe_dict(v)) for k, v in d.iteritems()])
     elif isinstance(d, list):
         return [safe_dict(x) for x in d]
     else:
@@ -57,14 +56,12 @@ class DajaxiceRequest(View):
                 if settings.DEBUG:
                     raise FunctionNotCallableError
                 response = dajaxice_config.DAJAXICE_EXCEPTION
-            if django.get_version() >= '1.7':
-                return HttpResponse(response, content_type="application/x-json; charset=utf-8")
-            else:
-                return HttpResponse(response, mimetype="application/x-json; charset=utf-8")
+                return HttpResponse(
+                    response, content_type="application/x-json; charset=utf-8")
         else:
             raise FunctionNotCallableError
             log.error('Function %s is not callable. method=%s', name,
                       request.method)
             return HttpResponse(
-                    dajaxice_config.DAJAXICE_NOT_CALLABLE_RESPONSE,
-                    content_type="application/json; charset=utf-8")
+                dajaxice_config.DAJAXICE_NOT_CALLABLE_RESPONSE,
+                content_type="application/json; charset=utf-8")

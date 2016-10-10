@@ -20,6 +20,11 @@ Documentation
 http://django-dajaxice-ng.readthedocs.org/quickstart.html
 
 
+Django compatibility
+--------------------
+django-dajaxice Requires Django 1.7 or above.
+
+
 Should I use django-dajaxice?
 ------------------------------
 According to Jorge Bastida (https://github.com/jorgebastida),
@@ -34,7 +39,7 @@ According to Jorge Bastida (https://github.com/jorgebastida),
 
     Forget about adding more unnecessary complexity.  Keep things simple.
 
-And he has a point. However, what would you do if you are hired to add new features to a django app already built with dajaxice? Replace everything for jQuery (as Bastida suggests) or other technology? Find other guys interested and join forces to move the project forward? I chose the latter.  
+And he has a point. However, what would you do if you are hired to add new features to a django app already built with dajaxice? Replace everything for jQuery (as Bastida suggests) or other technology? Find other guys interested and join forces to move the project forward? I chose the latter.
 
 Project Aims
 ------------
