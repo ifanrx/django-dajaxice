@@ -56,10 +56,12 @@ class DajaxiceRequest(View):
                 if settings.DEBUG:
                     raise FunctionNotCallableError
                 response = dajaxice_config.DAJAXICE_EXCEPTION
-                return HttpResponse(
-                    response, content_type="application/x-json; charset=utf-8")
+
+            return HttpResponse(
+                response, content_type="application/x-json; charset=utf-8")
         else:
-            raise FunctionNotCallableError
+            if settings.DEBUG:
+                raise FunctionNotCallableError
             log.error('Function %s is not callable. method=%s', name,
                       request.method)
             return HttpResponse(
