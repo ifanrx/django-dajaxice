@@ -1,13 +1,18 @@
 from django.test import TestCase
 
+try:
+    from django.test.utils import override_settings
+except ImportError:
+    from django.test import override_settings
+
 from django.conf import settings
 
 from dajaxice.core import DajaxiceConfig
 from dajaxice.core.Dajaxice import DajaxiceModule, DajaxiceFunction, Dajaxice
 from dajaxice.exceptions import FunctionNotCallableError
 
-class DajaxiceModuleTest(TestCase):
 
+class DajaxiceModuleTest(TestCase):
     def setUp(self):
         self.module = DajaxiceModule()
 
@@ -29,9 +34,7 @@ class DajaxiceModuleTest(TestCase):
 
 
 class DajaxiceFunctionTest(TestCase):
-
     def test_constructor(self):
-
         class CalledException(Exception):
             pass
 
@@ -47,7 +50,6 @@ class DajaxiceFunctionTest(TestCase):
 
 
 class DajaxiceTest(TestCase):
-
     def setUp(self):
         self.dajaxice = Dajaxice()
         self.function = lambda x: x
@@ -94,7 +96,6 @@ class DajaxiceTest(TestCase):
 
 
 class DajaxiceConfigTest(TestCase):
-
     def setUp(self):
         self.config = DajaxiceConfig()
 
@@ -110,15 +111,15 @@ class DajaxiceConfigTest(TestCase):
         self.assertEqual(type(self.config.modules), DajaxiceModule)
 
 
+@override_settings(ROOT_URLCONF='dajaxice.tests.urls')
 class DjangoIntegrationTest(TestCase):
-
-    urls = 'dajaxice.tests.urls'
-
     def setUp(self):
         settings.INSTALLED_APPS += ('dajaxice.tests',)
 
     def test_calling_not_registered_function(self):
-        self.failUnlessRaises(FunctionNotCallableError, self.client.post, '/dajaxice/dajaxice.tests.this_function_not_exist/')
+        settings.DEBUG = True  # 5e4069ad9fa0588648aa3b88261afe50e26fa3fc
+        self.failUnlessRaises(FunctionNotCallableError,
+                              self.client.post, '/dajaxice/dajaxice.tests.this_function_not_exist/')
 
     def test_calling_registered_function(self):
         response = self.client.post('/dajaxice/dajaxice.tests.test_foo/')
@@ -127,34 +128,29 @@ class DjangoIntegrationTest(TestCase):
         self.failUnlessEqual(response.content, '{"foo": "bar"}')
 
     def test_calling_registered_function_with_params(self):
-
         response = self.client.post('/dajaxice/dajaxice.tests.test_foo_with_params/', {'argv': '{"param1":"value1"}'})
 
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.content, '{"param1": "value1"}')
 
     def test_bad_function(self):
-
         response = self.client.post('/dajaxice/dajaxice.tests.test_ajax_exception/')
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.content, "DAJAXICE_EXCEPTION")
 
     def test_get_register(self):
-
         response = self.client.get('/dajaxice/dajaxice.tests.test_get_register/')
 
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.content, '{"foo": "user"}')
 
     def test_get_custom_name_register(self):
-
         response = self.client.get('/dajaxice/get_user_data/')
 
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.content, '{"bar": "user"}')
 
     def test_multi_register(self):
-
         response = self.client.get('/dajaxice/get_multi/')
         self.failUnlessEqual(response.status_code, 200)
         self.failUnlessEqual(response.content, '{"foo": "multi"}')
