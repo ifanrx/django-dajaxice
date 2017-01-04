@@ -9,7 +9,7 @@ env:
   - DJANGO="django==1.10"
 
 install:
-  - pip install $DJANGO --use-mirrors
+  - pip install $DJANGO
 
 
 branches:
