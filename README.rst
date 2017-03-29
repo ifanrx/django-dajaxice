@@ -11,6 +11,7 @@ This is the next generation of dajaxice_ maintained by ifanrx_.
 
 .. _dajaxice: https://github.com/jorgebastida/django-dajaxice
 .. _ifanrx: https://github.com/ifanrx
+
 Dajaxice is the communication core of dajaxproject. It's main goal is to trivialize the asynchronous communication within the django server side code and your js code.
 
 dajaxice is JS-framework agnostic and focuses on decoupling the presentation logic from the server-side logic. dajaxice only requieres 5 minutes to start working.
@@ -27,7 +28,7 @@ django-dajaxice Requires Django 1.7 or above.
 
 Should I use django-dajaxice?
 ------------------------------
-According to Jorge Bastida (https://github.com/jorgebastida),
+According to `Jorge Bastida`_, no:
 
     In a word, No. I created this project 4 years ago as a cool tool in order to solve one specific problem I had at that time.
 
@@ -39,7 +40,10 @@ According to Jorge Bastida (https://github.com/jorgebastida),
 
     Forget about adding more unnecessary complexity.  Keep things simple.
 
+
 And he has a point. However, what would you do if you are hired to add new features to a django app already built with dajaxice? Replace everything for jQuery (as Bastida suggests) or other technology? Find other guys interested and join forces to move the project forward? I chose the latter.
+
+.. _Jorge Bastida: https://github.com/jorgebastida
 
 Project Aims
 ------------
