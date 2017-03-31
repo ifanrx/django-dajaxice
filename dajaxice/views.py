@@ -8,21 +8,8 @@ from dajaxice.core import dajaxice_functions, dajaxice_config
 
 import json
 
+
 log = logging.getLogger('dajaxice')
-
-
-def safe_dict(d):
-    """
-    Recursively clone json structure with UTF-8 dictionary keys
-    http://www.gossamer-threads.com/lists/python/bugs/684379
-    """
-    if isinstance(d, dict):
-        return dict(
-            [(k.encode('utf-8'), safe_dict(v)) for k, v in d.iteritems()])
-    elif isinstance(d, list):
-        return [safe_dict(x) for x in d]
-    else:
-        return d
 
 
 class DajaxiceRequest(View):
@@ -36,21 +23,22 @@ class DajaxiceRequest(View):
         # Check if the function is callable
         if dajaxice_functions.is_callable(name, request.method):
 
-            function = dajaxice_functions.get(name)
-            data = getattr(request, function.method).get('argv', '')
+            func = dajaxice_functions.get(name)
+            data = getattr(request, func.method).get('argv', 'undefined')
 
             # Clean the argv
             if data != 'undefined':
                 try:
-                    data = safe_dict(json.loads(data))
-                except Exception:
+                    data = json.loads(data)
+                except json.decoder.JSONDecodeError:
+                    log.exception('name=%s, data=%s', name, data)
                     data = {}
             else:
                 data = {}
 
             # Call the function. If something goes wrong, handle the Exception
             try:
-                response = function.call(request, **data)
+                response = func.call(request, **data)
             except:
                 log.exception('name=%s, data=%s', name, data)
                 if settings.DEBUG:

@@ -24,7 +24,7 @@ class DajaxiceModuleTest(TestCase):
 
         self.module.add('foo.bar', function)
         self.assertEqual(self.module.functions, {'test': function})
-        self.assertEqual(self.module.submodules.keys(), ['foo'])
+        self.assertEqual(list(self.module.submodules.keys()), ['foo'])
         self.assertEqual(self.module.submodules['foo'].functions, {'bar': function})
 
 
@@ -90,7 +90,7 @@ class DajaxiceTest(TestCase):
         self.dajaxice.register(self.function, 'bar')
 
         self.assertEqual(type(self.dajaxice.modules), DajaxiceModule)
-        self.assertEqual(self.dajaxice.modules.functions.keys(), ['foo', 'bar'])
+        self.assertEqual(list(self.dajaxice.modules.functions.keys()), ['foo', 'bar'])
 
 
 class DajaxiceConfigTest(TestCase):
@@ -118,47 +118,47 @@ class DjangoIntegrationTest(TestCase):
         settings.INSTALLED_APPS += ('dajaxice.tests',)
 
     def test_calling_not_registered_function(self):
-        self.failUnlessRaises(FunctionNotCallableError, self.client.post, '/dajaxice/dajaxice.tests.this_function_not_exist/')
+        self.assertRaises(FunctionNotCallableError, self.client.post, '/dajaxice/dajaxice.tests.this_function_not_exist/')
 
     def test_calling_registered_function(self):
         response = self.client.post('/dajaxice/dajaxice.tests.test_foo/')
 
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content, '{"foo": "bar"}')
+        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "bar"}')
 
     def test_calling_registered_function_with_params(self):
 
         response = self.client.post('/dajaxice/dajaxice.tests.test_foo_with_params/', {'argv': '{"param1":"value1"}'})
 
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content, '{"param1": "value1"}')
+        self.failUnlessEqual(response.content.decode('utf-8'), '{"param1": "value1"}')
 
     def test_bad_function(self):
 
         response = self.client.post('/dajaxice/dajaxice.tests.test_ajax_exception/')
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content, "DAJAXICE_EXCEPTION")
+        self.failUnlessEqual(response.content.decode('utf-8'), "DAJAXICE_EXCEPTION")
 
     def test_get_register(self):
 
         response = self.client.get('/dajaxice/dajaxice.tests.test_get_register/')
 
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content, '{"foo": "user"}')
+        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "user"}')
 
     def test_get_custom_name_register(self):
 
         response = self.client.get('/dajaxice/get_user_data/')
 
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content, '{"bar": "user"}')
+        self.failUnlessEqual(response.content.decode('utf-8'), '{"bar": "user"}')
 
     def test_multi_register(self):
 
         response = self.client.get('/dajaxice/get_multi/')
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content, '{"foo": "multi"}')
+        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "multi"}')
 
         response = self.client.post('/dajaxice/post_multi/')
         self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content, '{"foo": "multi"}')
+        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "multi"}')
