@@ -1,12 +1,12 @@
 import os
 import tempfile
 
+import django
 from django.contrib.staticfiles import finders
 from django.template import Context
 from django.template.loader import get_template
 from django.core.exceptions import SuspiciousOperation
 
-from django import get_version
 
 class VirtualStorage(finders.FileSystemStorage):
     """" Mock a FileSystemStorage to build tmp files on demand."""
@@ -69,7 +69,7 @@ class DajaxiceStorage(VirtualStorage):
         dajaxice_autodiscover()
 
         #older versions of django require Context
-        if get_version() < '1.9':
+        if django.VERSION < (1, 9):
             c = Context({'dajaxice_config': dajaxice_config})
         else:
             c = {'dajaxice_config': dajaxice_config}
