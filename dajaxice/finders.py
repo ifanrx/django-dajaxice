@@ -1,5 +1,6 @@
 import os
 import tempfile
+from distutils.version import StrictVersion
 
 from django.contrib.staticfiles import finders
 from django.template import Context
@@ -69,7 +70,7 @@ class DajaxiceStorage(VirtualStorage):
         dajaxice_autodiscover()
 
         #older versions of django require Context
-        if get_version() < '1.9':
+        if StrictVersion(get_version()) < StrictVersion('1.9'):
             c = Context({'dajaxice_config': dajaxice_config})
         else:
             c = {'dajaxice_config': dajaxice_config}
