@@ -68,8 +68,8 @@ class DajaxiceStorage(VirtualStorage):
 
         dajaxice_autodiscover()
 
-        #older versions of django require Context
-        if get_version() < '1.9':
+        # older versions of django require Context
+        if map(lambda x: int(x), get_version().split('.')) < [1, 9]:
             c = Context({'dajaxice_config': dajaxice_config})
         else:
             c = {'dajaxice_config': dajaxice_config}
@@ -79,3 +79,4 @@ class DajaxiceStorage(VirtualStorage):
 
 class DajaxiceFinder(finders.BaseStorageFinder):
     storage = DajaxiceStorage()
+
