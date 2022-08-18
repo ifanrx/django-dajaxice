@@ -8,7 +8,7 @@ INSTALLED_APPS = [
     # 'django.contrib.messages',
     # 'django.contrib.staticfiles',
     # 'dajaxice',
-    'tests',
+    'dajaxice.tests',
 ]
 #
 # MIDDLEWARE_CLASSES = (

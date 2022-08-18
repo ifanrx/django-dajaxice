@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+set -o errexit
+set -o pipefail
+# set -o xtrace
+
 function is_lower_ver {
         ver=`echo -ne "$1\n$2" |sort -Vr |head -n1`
         if [ "$2" == "$1" ]; then

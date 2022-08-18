@@ -18,7 +18,7 @@ setup(
                       "doesn't require any JS Framework."
                       "This is the next generation of dajaxice maintained by ifanrx."),
     install_requires=[
-        'Django>=2.2'
+        'Django>=3.2'
     ],
     classifiers=['Development Status :: 4 - Beta',
                 'Environment :: Web Environment',

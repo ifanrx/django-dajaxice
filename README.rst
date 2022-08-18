@@ -52,4 +52,10 @@ Project Aims
   * Unobtrusive standard-compliant (W3C) XMLHttpRequest 1.0 object usage.
   * Aggresive Django version support while regularly merging from upstream.
 
+Running Tests
+------------
 
+.. code-block:: bash
+
+   $ pip install -r dajaxice/tests/requirements.txt
+   $ bash test_runner.sh

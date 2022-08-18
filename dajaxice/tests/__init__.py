@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from django.conf import settings
 
@@ -117,6 +117,7 @@ class DjangoIntegrationTest(TestCase):
     def setUp(self):
         settings.INSTALLED_APPS += ('dajaxice.tests',)
 
+    @override_settings(DEBUG=True)
     def test_calling_not_registered_function(self):
         self.assertRaises(FunctionNotCallableError, self.client.post, '/dajaxice/dajaxice.tests.this_function_not_exist/')
 
