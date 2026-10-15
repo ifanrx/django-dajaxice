@@ -4,8 +4,8 @@ django-dajaxice-ng
 .. image:: https://badge.fury.io/py/django-dajaxice-ng.png
     :target: http://badge.fury.io/py/django-dajaxice-ng
 
-.. image:: https://travis-ci.org/ifanrx/django-dajaxice.png?branch=master
-    :target: https://travis-ci.org/ifanrx/django-dajaxice
+.. image:: https://github.com/ifanrx/django-dajaxice/actions/workflows/ci.yml/badge.svg?branch=master
+    :target: https://github.com/ifanrx/django-dajaxice/actions/workflows/ci.yml
 
 This is the next generation of dajaxice_ maintained by ifanrx_.
 
