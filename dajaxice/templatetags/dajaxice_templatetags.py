@@ -2,15 +2,10 @@ import logging
 
 from django import template
 from django.middleware.csrf import get_token
-from django.conf import STATICFILES_STORAGE_ALIAS
-from django.core.files import storage 
+from django.contrib.staticfiles.storage import staticfiles_storage
 from django.urls import reverse
 from django.utils.safestring import mark_safe
-from dajaxice.core import dajaxice_config
-
-
-
-staticfiles_storage = storage.storages[STATICFILES_STORAGE_ALIAS] 
+from dajaxice.core import dajaxice_config 
 
 register = template.Library()
 

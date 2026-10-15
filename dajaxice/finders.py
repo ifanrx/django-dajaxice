@@ -2,14 +2,13 @@ import os
 import tempfile
 
 from django.contrib.staticfiles import finders
-from django.template import Context
-from django.template.loader import get_template
 from django.core.exceptions import SuspiciousOperation
+from django.core.files.storage import FileSystemStorage
+from django.template.loader import get_template
 
-from django import get_version
 
-class VirtualStorage(finders.FileSystemStorage):
-    """" Mock a FileSystemStorage to build tmp files on demand."""
+class VirtualStorage(FileSystemStorage):
+    """Mock a FileSystemStorage to build tmp files on demand."""
 
     def __init__(self, *args, **kwargs):
         self._files_cache = {}
@@ -21,19 +20,21 @@ class VirtualStorage(finders.FileSystemStorage):
 
         data = getattr(self, self.files[path])()
 
-        try:
-            current_file = open(self._files_cache[path])
-            current_data = current_file.read()
-            current_file.close()
-            if current_data != data:
-                os.remove(path)
-                raise Exception("Invalid data")
-        except Exception:
-            handle, tmp_path = tempfile.mkstemp()
-            tmp_file = open(tmp_path, 'w')
+        cached_path = self._files_cache.get(path)
+        if cached_path and os.path.exists(cached_path):
+            try:
+                with open(cached_path, 'r', encoding='utf-8') as current_file:
+                    current_data = current_file.read()
+                if current_data == data:
+                    return cached_path
+                os.remove(cached_path)
+            except Exception:
+                pass
+
+        handle, tmp_path = tempfile.mkstemp()
+        with os.fdopen(handle, 'w', encoding='utf-8') as tmp_file:
             tmp_file.write(data)
-            tmp_file.close()
-            self._files_cache[path] = tmp_path
+        self._files_cache[path] = tmp_path
 
         return self._files_cache[path]
 
@@ -41,15 +42,19 @@ class VirtualStorage(finders.FileSystemStorage):
         return name in self.files
 
     def listdir(self, path):
-        folders, files = [], []
+        path = path.strip('/')
+        prefix = (path + '/') if path else ''
+        folders, files = set(), set()
         for f in self.files:
-            if f.startswith(path):
-                f = f.replace(path, '', 1)
-                if os.sep in f:
-                    folders.append(f.split(os.sep, 1)[0])
-                else:
-                    files.append(f)
-        return folders, files
+            f_norm = f.replace('\\', '/')
+            if prefix and not f_norm.startswith(prefix):
+                continue
+            relative = f_norm[len(prefix):]
+            if '/' in relative:
+                folders.add(relative.split('/', 1)[0])
+            elif relative:
+                files.add(relative)
+        return sorted(list(folders)), sorted(list(files))
 
     def path(self, name):
         try:
@@ -61,22 +66,20 @@ class VirtualStorage(finders.FileSystemStorage):
 
 class DajaxiceStorage(VirtualStorage):
 
-    files = {os.path.join('dajaxice', 'dajaxice.core.js'): 'dajaxice_core_js'}
+    files = {
+        'dajaxice/dajaxice.core.js': 'dajaxice_core_js',
+        os.path.join('dajaxice', 'dajaxice.core.js'): 'dajaxice_core_js',
+    }
 
     def dajaxice_core_js(self):
         from dajaxice.core import dajaxice_autodiscover, dajaxice_config
 
         dajaxice_autodiscover()
 
-        # older versions of django require Context
-        if list(map(lambda x: int(x), get_version().split('.'))) < [1, 9]:
-            c = Context({'dajaxice_config': dajaxice_config})
-        else:
-            c = {'dajaxice_config': dajaxice_config}
-
-        return get_template(os.path.join('dajaxice', 'dajaxice.core.js')).render(c)
+        return get_template('dajaxice/dajaxice.core.js').render(
+            {'dajaxice_config': dajaxice_config}
+        )
 
 
 class DajaxiceFinder(finders.BaseStorageFinder):
     storage = DajaxiceStorage()
-

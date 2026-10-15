@@ -1,10 +1,15 @@
-from django.test import TestCase, override_settings
+import os
+from django.apps import apps
+from django.template import Context, Template
+from django.test import RequestFactory, TestCase, override_settings
 
-from django.conf import settings
-
-from dajaxice.core import DajaxiceConfig
-from dajaxice.core.Dajaxice import DajaxiceModule, DajaxiceFunction, Dajaxice
+from dajaxice.apps import DajaxiceConfig as DajaxiceAppConfig
+from dajaxice.core import DajaxiceConfig, dajaxice_autodiscover, dajaxice_functions
+from dajaxice.core.Dajaxice import Dajaxice, DajaxiceFunction, DajaxiceModule
 from dajaxice.exceptions import FunctionNotCallableError
+from dajaxice.finders import DajaxiceFinder, DajaxiceStorage
+from dajaxice.utils import deserialize_form
+
 
 class DajaxiceModuleTest(TestCase):
 
@@ -112,11 +117,6 @@ class DajaxiceConfigTest(TestCase):
 
 class DjangoIntegrationTest(TestCase):
 
-    urls = 'dajaxice.tests.urls'
-
-    def setUp(self):
-        settings.INSTALLED_APPS += ('dajaxice.tests',)
-
     @override_settings(DEBUG=True)
     def test_calling_not_registered_function(self):
         self.assertRaises(FunctionNotCallableError, self.client.post, '/dajaxice/dajaxice.tests.this_function_not_exist/')
@@ -124,42 +124,116 @@ class DjangoIntegrationTest(TestCase):
     def test_calling_registered_function(self):
         response = self.client.post('/dajaxice/dajaxice.tests.test_foo/')
 
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "bar"}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), '{"foo": "bar"}')
 
     def test_calling_registered_function_with_params(self):
 
         response = self.client.post('/dajaxice/dajaxice.tests.test_foo_with_params/', {'argv': '{"param1":"value1"}'})
 
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content.decode('utf-8'), '{"param1": "value1"}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), '{"param1": "value1"}')
 
     def test_bad_function(self):
 
         response = self.client.post('/dajaxice/dajaxice.tests.test_ajax_exception/')
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content.decode('utf-8'), "DAJAXICE_EXCEPTION")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), "DAJAXICE_EXCEPTION")
 
     def test_get_register(self):
 
         response = self.client.get('/dajaxice/dajaxice.tests.test_get_register/')
 
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "user"}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), '{"foo": "user"}')
 
     def test_get_custom_name_register(self):
 
         response = self.client.get('/dajaxice/get_user_data/')
 
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content.decode('utf-8'), '{"bar": "user"}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), '{"bar": "user"}')
 
     def test_multi_register(self):
 
         response = self.client.get('/dajaxice/get_multi/')
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "multi"}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), '{"foo": "multi"}')
 
         response = self.client.post('/dajaxice/post_multi/')
-        self.failUnlessEqual(response.status_code, 200)
-        self.failUnlessEqual(response.content.decode('utf-8'), '{"foo": "multi"}')
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content.decode('utf-8'), '{"foo": "multi"}')
+
+
+class DajaxiceFinderTest(TestCase):
+
+    def setUp(self):
+        self.finder = DajaxiceFinder()
+
+    def test_find_core_js(self):
+        match = self.finder.find('dajaxice/dajaxice.core.js')
+        self.assertTrue(bool(match))
+        self.assertTrue(os.path.exists(match))
+        with open(match, 'r', encoding='utf-8') as f:
+            content = f.read()
+        self.assertIn('var Dajaxice =', content)
+        self.assertIn('dajaxice_endpoint', content)
+
+    def test_find_non_existent(self):
+        match = self.finder.find('nonexistent/file.js')
+        self.assertEqual(match, [])
+
+    def test_storage_exists_and_listdir(self):
+        storage = DajaxiceStorage()
+        self.assertTrue(storage.exists('dajaxice/dajaxice.core.js'))
+        self.assertFalse(storage.exists('random.js'))
+        folders, files = storage.listdir('dajaxice')
+        self.assertIn('dajaxice.core.js', files)
+
+
+class DajaxiceTemplateTagTest(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_dajaxice_js_import_with_request(self):
+        request = self.factory.get('/')
+        template = Template('{% load dajaxice_templatetags %}{% dajaxice_js_import %}')
+        rendered = template.render(Context({'request': request}))
+        self.assertIn("var dajaxice_endpoint = '/dajaxice/'", rendered)
+        self.assertIn('<script src="/static/dajaxice/dajaxice.core.js"', rendered)
+
+    def test_dajaxice_js_import_nocsrf(self):
+        template = Template("{% load dajaxice_templatetags %}{% dajaxice_js_import 'nocsrf' %}")
+        rendered = template.render(Context({}))
+        self.assertIn("var dajaxice_endpoint = '/dajaxice/'", rendered)
+        self.assertIn('<script src="/static/dajaxice/dajaxice.core.js"', rendered)
+
+
+class DajaxiceUtilsTest(TestCase):
+
+    def test_deserialize_form(self):
+        form_data = deserialize_form('name=Antigravity&task=DjangoUpgrade&number=42')
+        self.assertEqual(form_data.get('name'), 'Antigravity')
+        self.assertEqual(form_data.get('task'), 'DjangoUpgrade')
+        self.assertEqual(form_data.get('number'), '42')
+
+
+class DajaxiceAppConfigTest(TestCase):
+
+    def test_app_config(self):
+        config = apps.get_app_config('dajaxice')
+        self.assertIsInstance(config, DajaxiceAppConfig)
+        self.assertEqual(config.name, 'dajaxice')
+        self.assertEqual(config.verbose_name, 'Dajaxice')
+
+
+class DajaxiceAutodiscoverTest(TestCase):
+
+    def test_autodiscover_idempotent(self):
+        # Initial count
+        count_before = len(dajaxice_functions._registry)
+        self.assertGreater(count_before, 0)
+        # Calling autodiscover again must be safe and idempotent
+        dajaxice_autodiscover()
+        self.assertEqual(len(dajaxice_functions._registry), count_before)

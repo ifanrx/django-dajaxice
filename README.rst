@@ -22,7 +22,7 @@ http://django-dajaxice-ng.readthedocs.org/quickstart.html
 
 Django compatibility
 --------------------
-django-dajaxice Requires Django 1.7 or above.
+django-dajaxice requires Django 4.2 LTS or above (tested with Django 4.2 and Django 5.2 LTS, Python 3.10 - 3.12).
 
 
 Should I use django-dajaxice?

@@ -71,6 +71,9 @@ class Dajaxice(object):
             log.error('%s was already registered.' % name)
             return
 
+        # Invalidate cached modules
+        self._modules = None
+
         # Create the dajaxice function.
         function = DajaxiceFunction(function=function,
                                     name=name,
@@ -117,18 +120,20 @@ def dajaxice_autodiscover():
         return
     LOADING_DAJAXICE = True
 
-    import importlib
-    from django.conf import settings
+    try:
+        from django.apps import apps
+        from django.utils.module_loading import autodiscover_modules
+        from dajaxice.core import dajaxice_functions
 
-    for app in settings.INSTALLED_APPS:
-        try:
-            importlib.import_module(app)
-        except AttributeError:
-            continue
-
-        try:
-            importlib.import_module(f"{app}.ajax")
-        except ImportError:
-            continue
-
-    LOADING_DAJAXICE = False
+        if apps.ready:
+            autodiscover_modules('ajax', register_to=dajaxice_functions)
+        else:
+            import importlib
+            from django.conf import settings
+            for app in settings.INSTALLED_APPS:
+                try:
+                    importlib.import_module(f"{app}.ajax")
+                except (ImportError, AttributeError):
+                    continue
+    finally:
+        LOADING_DAJAXICE = False
